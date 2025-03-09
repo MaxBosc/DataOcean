@@ -29,7 +29,8 @@ def main():
         ).reset_index()
     
     # write to parquet file
-    file_name = f'sp500_prx_{datetime.now().strftime("%Y%m%d")}.parquet'
+    # file_name = f'sp500_prx_{datetime.now().strftime("%Y%m%d")}.parquet'
+    file_name = "sp500_prx.parquet"
     prices.to_parquet(
         os.path.join(BRONZE_LAYER_PATH, file_name),
         **write_options

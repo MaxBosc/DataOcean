@@ -13,8 +13,8 @@ from datetime import datetime
 import pandas as pd
 
 
-BRONZE_LAYER_PATH = r"..\..\data\bronze"
-SILVER_LAYER_PATH = r"..\..\data\silver"
+BRONZE_LAYER_PATH = r"..\..\..\data\bronze"
+SILVER_LAYER_PATH = r"..\..\..\data\silver"
 
 # %%
 def load(file_path, file_name):
@@ -67,10 +67,12 @@ def main():
         .droplevel(0, axis=1)
         .sort_index()
         .pipe(fill_to_date, end_date = datetime.today())
+        .rename_axis('date')
         )
 
     # write to parquet file
-    file_name = f'sp500_components_{datetime.now().strftime("%Y%m%d")}.parquet'
+    # file_name = f'sp500_components_{datetime.now().strftime("%Y%m%d")}.parquet'
+    file_name = 'sp500_components.parquet'
     df.to_parquet(
         os.path.join(SILVER_LAYER_PATH, file_name),
         engine='fastparquet'
@@ -78,10 +80,13 @@ def main():
     
     # dump the active tickers to a text file
     active_tickers = find_active_tickers(df)
-    tickers_file_name = f'active_tickers_{datetime.now().strftime("%Y%m%d")}.json'
+    #tickers_file_name = f'active_tickers_{datetime.now().strftime("%Y%m%d")}.json'
+    tickers_file_name = 'sp500_active_tickers.json'
     with open(os.path.join(SILVER_LAYER_PATH, tickers_file_name), 'w') as f:
         json.dump(active_tickers, f)
 
 # %%
 if __name__ == '__main__':
     main()
+
+# %%
