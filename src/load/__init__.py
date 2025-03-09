@@ -1,0 +1,1 @@
+BRONZE_LAYER_PATH = r"..\..\data\bronze"
