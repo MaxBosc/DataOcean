@@ -6,9 +6,9 @@
 # and save it to the silver layer in parquet format
 
 # ------------------------------------------------------------
-
 # %%
 import os
+import json
 from datetime import datetime
 import pandas as pd
 
@@ -43,6 +43,11 @@ def fill_to_date(df, end_date: datetime) -> pd.DataFrame:
     df = df.reindex(date_range, method='ffill')
     return df
 
+def find_active_tickers(df) -> pd.DataFrame:
+    df = df.copy()
+    latest = df.index.get_level_values(0).max()
+    selected = df.loc[latest]
+    return df.loc[latest][selected].index.tolist()
 
 # %%
 def main():
@@ -70,6 +75,12 @@ def main():
         os.path.join(SILVER_LAYER_PATH, file_name),
         engine='fastparquet'
         )
+    
+    # dump the active tickers to a text file
+    active_tickers = find_active_tickers(df)
+    tickers_file_name = f'active_tickers_{datetime.now().strftime("%Y%m%d")}.json'
+    with open(os.path.join(SILVER_LAYER_PATH, tickers_file_name), 'w') as f:
+        json.dump(active_tickers, f)
 
 # %%
 if __name__ == '__main__':
